@@ -1,0 +1,30 @@
+ int len = strlen(s);
+    char* stack = malloc(len);
+    int top = -1;
+    static char yes[] = "YES";
+    static char no[] = "NO";
+    for (int i = 0; i < len; i++) {
+        if (s[i] == '(' || s[i] == '{' || s[i] == '[') {
+            stack[++top] = s[i];
+        } else {
+            if (top == -1) {
+                free(stack);
+                return no;
+            }
+            char open = stack[top--];
+            if ((open == '(' && s[i] != ')') ||
+                (open == '{' && s[i] != '}') ||
+                (open == '[' && s[i] != ']')) {
+                free(stack);
+                return no;
+            }
+        }
+    }
+    if (top == -1) {
+        free(stack);
+        return yes;
+    } else {
+        free(stack);
+        return no;
+    }
+}

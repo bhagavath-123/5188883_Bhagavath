@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+#define MAX 100000
+
+int stack_in[MAX], stack_out[MAX];
+int top_in = -1, top_out = -1;
+
+void push_in(int x) {
+    stack_in[++top_in] = x;
+}
+
+void push_out(int x) {
+    stack_out[++top_out] = x;
+}
+
+int pop_in() {
+    return stack_in[top_in--];
+}
+
+int pop_out() {
+    return stack_out[top_out--];
+}
+
+int is_empty_in() {
+    return top_in == -1;
+}
+
+int is_empty_out() {
+    return top_out == -1;
+}
+
+void enqueue(int x) {
+    push_in(x);
+}
+
+void dequeue() {
+    if (is_empty_out()) {
+        while (!is_empty_in()) {
+            push_out(pop_in());
+        }
+    }
+    pop_out();
+}
+
+int front() {
+    if (is_empty_out()) {
+        while (!is_empty_in()) {
+            push_out(pop_in());
+        }
+    }
+    return stack_out[top_out];
+}
+
+int main() {
+     int q;
+    scanf("%d", &q);
+    for (int i = 0; i < q; i++) {
+        int type, x;
+        scanf("%d", &type);
+        if (type == 1) {
+            scanf("%d", &x);
+            enqueue(x);
+        } else if (type == 2) {
+            dequeue();
+        } else if (type == 3) {
+            printf("%d\n", front());
+        }
+    }
+    return 0;
+}
+
+    /* Enter your code here. Read input from STDIN. Print output to STDOUT */    
+    

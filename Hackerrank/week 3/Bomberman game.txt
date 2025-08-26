@@ -1,0 +1,82 @@
+char** clone_grid(int rows, int cols, char** grid) {
+    char** new_grid = malloc(rows * sizeof(char*));
+    for (int i = 0; i < rows; i++) {
+        new_grid[i] = malloc((cols + 1) * sizeof(char));
+        strcpy(new_grid[i], grid[i]);
+    }
+    return new_grid;
+}
+
+void fill_grid(int rows, int cols, char** grid, char val) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            grid[i][j] = val;
+        }
+        grid[i][cols] = '\0';
+    }
+}
+
+void detonate(int rows, int cols, char** grid, char** bombs) {
+    int dx[] = {-1, 0, 1, 0};
+    int dy[] = {0, -1, 0, 1};
+    char** temp = clone_grid(rows, cols, bombs);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (bombs[i][j] == 'O') {
+                grid[i][j] = '.';
+                for (int dir = 0; dir < 4; dir++) {
+                    int ni = i + dx[dir], nj = j + dy[dir];
+                    if (ni >= 0 && ni < rows && nj >= 0 && nj < cols)
+                        grid[ni][nj] = '.';
+                }
+            }
+        }
+    }
+    for (int i = 0; i < rows; i++) free(temp[i]);
+    free(temp);
+}
+
+char** bomberMan(int n, int grid_count, char** grid, int* result_count) {
+    int rows = grid_count;
+    int cols = strlen(grid[0]);
+    *result_count = rows;
+    char** result = NULL;
+    
+    if (n == 1) {
+        result = clone_grid(rows, cols, grid);
+    } else if (n % 2 == 0) {
+        result = malloc(rows * sizeof(char*));
+        for (int i = 0; i < rows; i++) {
+            result[i] = malloc((cols + 1) * sizeof(char));
+            fill_grid(1, cols, &result[i], 'O');
+        }
+    } else {
+        // First detonation
+        char** bomb1 = malloc(rows * sizeof(char*));
+        for (int i = 0; i < rows; i++) {
+            bomb1[i] = malloc((cols + 1) * sizeof(char));
+            fill_grid(1, cols, &bomb1[i], 'O');
+        }
+        detonate(rows, cols, bomb1, grid);
+        
+        // Second detonation
+        char** bomb2 = malloc(rows * sizeof(char*));
+        for (int i = 0; i < rows; i++) {
+            bomb2[i] = malloc((cols + 1) * sizeof(char));
+            fill_grid(1, cols, &bomb2[i], 'O');
+        }
+        detonate(rows, cols, bomb2, bomb1);
+        
+        // Pick correct state
+        if ((n - 3) % 4 == 0) {
+            result = bomb1;
+            for (int i = 0; i < rows; i++) free(bomb2[i]);
+            free(bomb2);
+        } else {
+            result = bomb2;
+            for (int i = 0; i < rows; i++) free(bomb1[i]);
+            free(bomb1);
+        }
+    }
+    return result;
+}

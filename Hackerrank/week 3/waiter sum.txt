@@ -1,0 +1,56 @@
+int is_prime(int n) {
+    if (n < 2) return 0;
+    for (int i = 2; i * i <= n; i++)
+        if (n % i == 0) return 0;
+    return 1;
+}
+
+void generate_primes(int count, int* primes) {
+    int val = 2;
+    int found = 0;
+    while (found < count) {
+        if (is_prime(val)) {
+            primes[found++] = val;
+        }
+        val++;
+    }
+}
+int* waiter(int number_count, int* number, int q, int* result_count) {
+    int* res = malloc(number_count * sizeof(int));
+    int res_idx = 0;
+    int* stackA = malloc(number_count * sizeof(int));
+    int topA = number_count - 1;
+    for (int i = 0; i < number_count; i++)
+        stackA[i] = number[i];
+    int* stackB = malloc(number_count * sizeof(int));
+    int* primes = malloc(q * sizeof(int));
+    generate_primes(q, primes);
+
+    for (int i = 0; i < q; i++) {
+        int tempA[number_count];
+        int topA2 = -1;
+        int topB = -1;
+        for (int j = topA; j >= 0; j--) {
+            if (stackA[j] % primes[i] == 0) {
+                stackB[++topB] = stackA[j];
+            } else {
+                tempA[++topA2] = stackA[j];
+            }
+        }
+        for (int j = topB; j >= 0; j--) {
+            res[res_idx++] = stackB[j];  // top to bottom
+        }
+        topA = topA2;
+        for (int j = 0; j <= topA; j++) {
+            stackA[j] = tempA[j];
+        }
+    }
+    for (int j = topA; j >= 0; j--) {
+        res[res_idx++] = stackA[j];
+    }
+    free(stackA);
+    free(stackB);
+    free(primes);
+    *result_count = res_idx;
+    return res;
+}

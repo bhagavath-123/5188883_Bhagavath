@@ -1,0 +1,69 @@
+int* climbingLeaderboard(int ranked_count, int* ranked, int player_count, int* player, int* result_count) {
+ int *unique = malloc(ranked_count * sizeof(int));
+    int unique_count = 0;
+    for (int i = 0; i < ranked_count; i++) {
+        if (i == 0 || ranked[i] != ranked[i-1]) {
+            unique[unique_count++] = ranked[i];
+        }
+    }
+
+    int *result = malloc(player_count * sizeof(int));
+    *result_count = player_count;
+
+    int idx = unique_count - 1;
+    for (int i = 0; i < player_count; i++) {
+        while (idx >= 0 && player[i] >= unique[idx]) {
+            idx--;
+        }
+        result[i] = idx + 2; 
+    }
+
+    free(unique);
+    return result;
+}
+
+int main()
+{
+    FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
+
+    int ranked_count = parse_int(ltrim(rtrim(readline())));
+
+    char** ranked_temp = split_string(rtrim(readline()));
+
+    int* ranked = malloc(ranked_count * sizeof(int));
+
+    for (int i = 0; i < ranked_count; i++) {
+        int ranked_item = parse_int(*(ranked_temp + i));
+
+        *(ranked + i) = ranked_item;
+    }
+
+    int player_count = parse_int(ltrim(rtrim(readline())));
+
+    char** player_temp = split_string(rtrim(readline()));
+
+    int* player = malloc(player_count * sizeof(int));
+
+    for (int i = 0; i < player_count; i++) {
+        int player_item = parse_int(*(player_temp + i));
+
+        *(player + i) = player_item;
+    }
+
+    int result_count;
+    int* result = climbingLeaderboard(ranked_count, ranked, player_count, player, &result_count);
+
+    for (int i = 0; i < result_count; i++) {
+        fprintf(fptr, "%d", *(result + i));
+
+        if (i != result_count - 1) {
+            fprintf(fptr, "\n");
+        }
+    }
+
+    fprintf(fptr, "\n");
+
+    fclose(fptr);
+
+    return 0;
+}

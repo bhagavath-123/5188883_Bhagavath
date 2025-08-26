@@ -1,0 +1,26 @@
+ if (!head1) return head2;
+    if (!head2) return head1;
+
+    SinglyLinkedListNode *merged = NULL, *tail = NULL;
+
+    while (head1 && head2) {
+        SinglyLinkedListNode *node;
+        if (head1->data <= head2->data) {
+            node = head1;
+            head1 = head1->next;
+        } else {
+            node = head2;
+            head2 = head2->next;
+        }
+        if (!merged) {
+            merged = node;
+            tail = node;
+        } else {
+            tail->next = node;
+            tail = node;
+        }
+    }
+    if (head1) tail->next = head1;
+    if (head2) tail->next = head2;
+    return merged;
+}

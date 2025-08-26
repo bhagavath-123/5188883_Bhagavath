@@ -1,0 +1,13 @@
+ SinglyLinkedListNode *prev = NULL;
+    SinglyLinkedListNode *current = llist;
+    SinglyLinkedListNode *next = NULL;
+
+    while (current != NULL) {
+        next = current->next;     // Save next node
+        current->next = prev;     // Reverse pointer
+        prev = current;           // Move prev forward
+        current = next;           // Move current forward
+    }
+
+    return prev;
+}
