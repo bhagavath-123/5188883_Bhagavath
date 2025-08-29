@@ -1,0 +1,76 @@
+#include <assert.h>
+#include <ctype.h>
+#include <limits.h>
+#include <math.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* readline();
+char* ltrim(char*);
+char* rtrim(char*);
+char** split_string(char*);
+
+int parse_int(char*);
+
+/*
+ * Complete the 'minimumMoves' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts following parameters:
+ *  1. STRING_ARRAY grid
+ *  2. INTEGER startX
+ *  3. INTEGER startY
+ *  4. INTEGER goalX
+ *  5. INTEGER goalY
+ */
+
+int minimumMoves(int grid_count, char** grid, int startX, int startY, int goalX, int goalY) {
+    int n = grid_count;
+    int moves[n][n];
+    memset(moves, -1, sizeof(moves));
+    int dx[] = {1, -1, 0, 0};
+    int dy[] = {0, 0, 1, -1};
+    int qx[n*n], qy[n*n];
+    int front = 0, back = 0;
+    moves[startX][startY] = 0;
+    qx[back] = startX;
+    qy[back++] = startY;
+    while (front < back) {
+        int x = qx[front];
+        int y = qy[front++];
+        for (int d = 0; d < 4; d++) {
+            int nx = x, ny = y;
+            while (1) {
+                nx += dx[d];
+                ny += dy[d];
+                if (nx < 0 || ny < 0 || nx >= n || ny >= n) break;
+                if (grid[nx][ny] == 'X') break;
+                if (moves[nx][ny] == -1) {
+                    moves[nx][ny] = moves[x][y] + 1;
+                    qx[back] = nx;
+                    qy[back++] = ny;
+                }
+            }
+        }
+    }
+    return moves[goalX][goalY];
+}
+
+
+int main()
+{
+    FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
+
+    int n = parse_int(ltrim(rtrim(readline())));
+
+    char** grid = malloc(n * sizeof(char*));
+
+    for (int i = 0; i < n; i++) {
+        char* grid_item = readline();
+
+        *(grid + i) = grid_item;
+    }

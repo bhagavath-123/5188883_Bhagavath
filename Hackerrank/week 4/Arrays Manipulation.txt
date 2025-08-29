@@ -1,0 +1,16 @@
+ long* arr = calloc(n + 2, sizeof(long));
+    for (int i = 0; i < queries_rows; i++) {
+        int a = queries[i][0];
+        int b = queries[i][1];
+        int k = queries[i][2];
+        arr[a] += k;
+        arr[b + 1] -= k;
+    }
+    long max = 0, curr = 0;
+    for (int i = 1; i <= n; i++) {
+        curr += arr[i];
+        if (curr > max) max = curr;
+    }
+    free(arr);
+    return max;
+}

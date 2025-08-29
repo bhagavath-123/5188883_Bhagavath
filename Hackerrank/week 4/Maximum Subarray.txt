@@ -1,0 +1,21 @@
+ int* res = malloc(2 * sizeof(int));
+    int max_subarray = arr[0];
+    int curr_max = arr[0];
+    int max_subseq = arr[0] > 0 ? arr[0] : 0;
+    int all_negative = 1;
+    for (int i = 1; i < arr_count; i++) {
+        if (arr[i] > 0) all_negative = 0;
+        curr_max = arr[i] > curr_max + arr[i] ? arr[i] : curr_max + arr[i];
+        max_subarray = curr_max > max_subarray ? curr_max : max_subarray;
+        if (arr[i] > 0) max_subseq += arr[i];
+    }
+    if (all_negative) {
+        max_subseq = arr[0];
+        for (int i = 1; i < arr_count; i++)
+            if (arr[i] > max_subseq) max_subseq = arr[i];
+    }
+    res[0] = max_subarray;
+    res[1] = max_subseq;
+    *result_count = 2;
+    return res;
+}

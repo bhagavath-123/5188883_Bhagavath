@@ -1,0 +1,23 @@
+int s1[h1_count + 1], s2[h2_count + 1], s3[h3_count + 1];
+    s1[h1_count] = 0;
+    s2[h2_count] = 0;
+    s3[h3_count] = 0;
+    for (int i = h1_count - 1; i >= 0; i--)
+        s1[i] = h1[i] + s1[i + 1];
+    for (int i = h2_count - 1; i >= 0; i--)
+        s2[i] = h2[i] + s2[i + 1];
+    for (int i = h3_count - 1; i >= 0; i--)
+        s3[i] = h3[i] + s3[i + 1];
+    int i1 = 0, i2 = 0, i3 = 0;
+    while (i1 <= h1_count && i2 <= h2_count && i3 <= h3_count) {
+        if (s1[i1] == s2[i2] && s2[i2] == s3[i3])
+            return s1[i1];
+        if (s1[i1] >= s2[i2] && s1[i1] >= s3[i3])
+            i1++;
+        else if (s2[i2] >= s1[i1] && s2[i2] >= s3[i3])
+            i2++;
+        else
+            i3++;
+    }
+    return 0;
+}

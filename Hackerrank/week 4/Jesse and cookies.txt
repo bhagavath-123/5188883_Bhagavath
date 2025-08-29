@@ -1,0 +1,56 @@
+ int* heap = malloc(A_count * sizeof(int));
+    int size = 0;
+    for (int i = 0; i < A_count; i++) {
+        int v = A[i];
+        int idx = size++;
+        heap[idx] = v;
+        while (idx > 0 && heap[(idx-1)/2] > heap[idx]) {
+            int t = heap[(idx-1)/2];
+            heap[(idx-1)/2] = heap[idx];
+            heap[idx] = t;
+            idx = (idx-1)/2;
+        }
+    }
+    int ops = 0;
+    while (size > 1 && heap[0] < k) {
+        int least = heap[0];
+        heap[0] = heap[--size];
+        int idx = 0;
+        while (1) {
+            int left = 2 * idx + 1, right = 2 * idx + 2, minidx = idx;
+            if (left < size && heap[left] < heap[minidx]) minidx = left;
+            if (right < size && heap[right] < heap[minidx]) minidx = right;
+            if (minidx == idx) break;
+            int t = heap[idx];
+            heap[idx] = heap[minidx];
+            heap[minidx] = t;
+            idx = minidx;
+        }
+        int second = heap[0];
+        heap[0] = heap[--size];
+        idx = 0;
+        while (1) {
+            int left = 2 * idx + 1, right = 2 * idx + 2, minidx = idx;
+            if (left < size && heap[left] < heap[minidx]) minidx = left;
+            if (right < size && heap[right] < heap[minidx]) minidx = right;
+            if (minidx == idx) break;
+            int t = heap[idx];
+            heap[idx] = heap[minidx];
+            heap[minidx] = t;
+            idx = minidx;
+        }
+        int combined = least + 2 * second;
+        int pushidx = size++;
+        heap[pushidx] = combined;
+        while (pushidx > 0 && heap[(pushidx-1)/2] > heap[pushidx]) {
+            int t = heap[(pushidx-1)/2];
+            heap[(pushidx-1)/2] = heap[pushidx];
+            heap[pushidx] = t;
+            pushidx = (pushidx-1)/2;
+        }
+        ops++;
+    }
+    int result = (size && heap[0] >= k) ? ops : -1;
+    free(heap);
+    return result;
+}

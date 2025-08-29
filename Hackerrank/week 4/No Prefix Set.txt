@@ -1,0 +1,34 @@
+typedef struct TrieNode {
+    struct TrieNode* children[10];
+    int isEnd;
+} TrieNode;
+
+TrieNode* getNode() {
+    TrieNode* node = malloc(sizeof(TrieNode));
+    for (int i = 0; i < 10; i++) node->children[i] = NULL;
+    node->isEnd = 0;
+    return node;
+}
+
+void noPrefix(int words_count, char** words) {
+    TrieNode* root = getNode();
+    for (int i = 0; i < words_count; i++) {
+        TrieNode* cur = root;
+        int bad = 0;
+        for (int j = 0; words[i][j]; j++) {
+            int idx = words[i][j] - 'a';
+            if (cur->children[idx] == NULL)
+                cur->children[idx] = getNode();
+            cur = cur->children[idx];
+            if (cur->isEnd) bad = 1;
+        }
+        cur->isEnd = 1;
+        for (int k = 0; k < 10; k++)
+            if (cur->children[k] != NULL) bad = 1;
+        if (bad) {
+            printf("BAD SET\n%s\n", words[i]);
+            return;
+        }
+    }
+    printf("GOOD SET\n");
+}

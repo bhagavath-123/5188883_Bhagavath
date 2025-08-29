@@ -1,0 +1,45 @@
+ char* res = malloc(n + 1);
+    strncpy(res, s, n);
+    res[n] = '\0';
+    int* diff = malloc(n * sizeof(int));
+    int cnt = 0;
+    for (int i = 0; i < n/2; i++) {
+        if (res[i] != res[n-1-i]) {
+            diff[i] = 1;
+            cnt++;
+        } else {
+            diff[i] = 0;
+        }
+    }
+    if (cnt > k) {
+        free(res);
+        free(diff);
+        char* x = malloc(3);
+        x[0] = '-'; x[1] = '1'; x[2] = '\0';
+        return x;
+    }
+    int remaining = k;
+    for (int i = 0; i < n/2; i++) {
+        char maxc = res[i] > res[n-1-i] ? res[i] : res[n-1-i];
+        if (diff[i] == 1) {
+            if (remaining - cnt >= 1 && maxc != '9') {
+                res[i] = res[n-1-i] = '9';
+                remaining -= 2;
+            } else {
+                res[i] = res[n-1-i] = maxc;
+                remaining -= 1;
+            }
+            cnt--;
+        } else {
+            if (remaining - cnt >= 2 && res[i] != '9') {
+                res[i] = res[n-1-i] = '9';
+                remaining -= 2;
+            }
+        }
+    }
+    if (n % 2 == 1 && remaining > 0) {
+        res[n/2] = '9';
+    }
+    free(diff);
+    return res;
+}

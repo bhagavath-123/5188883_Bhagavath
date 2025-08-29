@@ -1,0 +1,27 @@
+ const int MOD = 1000000007;
+    long long ways[m + 1];
+    ways[0] = 1;
+    for (int i = 1; i <= m; i++) {
+        ways[i] = 0;
+        if (i >= 1) ways[i] = (ways[i] + ways[i - 1]) % MOD;
+        if (i >= 2) ways[i] = (ways[i] + ways[i - 2]) % MOD;
+        if (i >= 3) ways[i] = (ways[i] + ways[i - 3]) % MOD;
+        if (i >= 4) ways[i] = (ways[i] + ways[i - 4]) % MOD;
+    }
+    long long row[m + 1];
+    for (int i = 0; i <= m; i++) {
+        row[i] = 1;
+        for (int j = 0; j < n; j++) {
+            row[i] = (row[i] * ways[i]) % MOD;
+        }
+    }
+    long long solid[m + 1];
+    solid[0] = 0;
+    for (int i = 1; i <= m; i++) {
+        solid[i] = row[i];
+        for (int j = 1; j < i; j++) {
+            solid[i] = (solid[i] - (solid[j] * row[i - j]) % MOD + MOD) % MOD;
+        }
+    }
+    return (int)(solid[m]);
+}

@@ -1,0 +1,43 @@
+int cmp_int(const void* a, const void* b) {
+    int ia = *(int*)a, ib = *(int*)b;
+    return (ia > ib) - (ia < ib);
+}
+
+int minSwaps(int n, int* arr, int* sorted) {
+    int* pos = malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++) pos[sorted[i]] = i;
+    int* visited = calloc(n, sizeof(int));
+    int swaps = 0;
+    for (int i = 0; i < n; i++) {
+        if (visited[i] || pos[arr[i]] == i) continue;
+        int cycle_size = 0;
+        int j = i;
+        while (!visited[j]) {
+            visited[j] = 1;
+            j = pos[arr[j]];
+            cycle_size++;
+        }
+        if (cycle_size > 0) swaps += cycle_size - 1;
+    }
+    free(pos);
+    free(visited);
+    return swaps;
+}
+
+int lilysHomework(int arr_count, int* arr) {
+    int* sorted1 = malloc(arr_count * sizeof(int));
+    int* sorted2 = malloc(arr_count * sizeof(int));
+    for (int i = 0; i < arr_count; i++) {
+        sorted1[i] = arr[i];
+        sorted2[i] = arr[i];
+    }
+    qsort(sorted1, arr_count, sizeof(int), cmp_int);
+    for (int i = 0; i < arr_count; i++) {
+        sorted2[i] = sorted1[arr_count - 1 - i];
+    }
+    int result1 = minSwaps(arr_count, arr, sorted1);
+    int result2 = minSwaps(arr_count, arr, sorted2);
+    free(sorted1);
+    free(sorted2);
+    return (result1 < result2) ? result1 : result2;
+}

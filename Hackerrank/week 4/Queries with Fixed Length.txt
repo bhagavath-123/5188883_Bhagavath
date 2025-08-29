@@ -1,0 +1,26 @@
+int* res = malloc(sizeof(int) * queries_count);
+    *result_count = queries_count;
+    for (int qi = 0; qi < queries_count; qi++) {
+        int d = queries[qi];
+        int* maxima = malloc((arr_count - d + 1) * sizeof(int));
+        int l = 0, r = 0;
+        int* deque = malloc(arr_count * sizeof(int));
+        int head = 0, tail = -1;
+        for (int i = 0; i < arr_count; i++) {
+            while (head <= tail && deque[head] <= i - d)
+                head++;
+            while (head <= tail && arr[deque[tail]] <= arr[i])
+                tail--;
+            deque[++tail] = i;
+            if (i >= d - 1) {
+                maxima[i - d + 1] = arr[deque[head]];
+            }
+        }
+        int minmax = maxima[0];
+        for (int i = 1; i < arr_count - d + 1; i++)
+            if (maxima[i] < minmax) minmax = maxima[i];
+        res[qi] = minmax;
+        free(maxima);
+        free(deque);
+    }
+    return res;

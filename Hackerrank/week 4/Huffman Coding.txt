@@ -1,0 +1,54 @@
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <limits.h>
+#include <stdbool.h>
+
+
+    
+    
+struct node {
+    char data;
+    struct node* left;
+    struct node* right;
+};
+
+void decode_huff(struct node* root, char* s) {
+    struct node* curr = root;
+    int i = 0;
+    while (s[i] != '\0') {
+        if (s[i] == '0') curr = curr->left;
+        else curr = curr->right;
+        if (curr->left == NULL && curr->right == NULL) {
+            printf("%c", curr->data);
+            curr = root;
+        }
+        i++;
+    }
+}
+
+int main() {
+    // Example tree setup
+    struct node* root = malloc(sizeof(struct node));
+    root->data = '\0';
+    root->left = malloc(sizeof(struct node));
+    root->right = malloc(sizeof(struct node));
+    root->left->data = '\0';
+    root->left->left = malloc(sizeof(struct node));
+    root->left->left->data = 'B';
+    root->left->left->left = root->left->left->right = NULL;
+    root->left->right = malloc(sizeof(struct node));
+    root->left->right->data = 'C';
+    root->left->right->left = root->left->right->right = NULL;
+    root->right->data = 'A';
+    root->right->left = root->right->right = NULL;
+
+    // Example encoded string matching tree structure (ABACA)
+    char s[] = "1001011";
+    decode_huff(root, s);
+    printf("\n");
+    // Free memory (skipped for brevity)
+    return 0;
+}
